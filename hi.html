@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    select, input, textarea {
+      margin-bottom: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+    }
+
+    #output {
+      margin-top: 20px;
+    }
+
+    button {
+      margin-right: 8px;
+    }
+  </style>
+  <title>Text Styler with Undo/Redo</title>
+</head>
+<body>
+
+  <label for="fontColor">Select Font Color:</label>
+  <select id="fontColor" onchange="changeStyle()">
+    <option value="black">Black</option>
+    <option value="red">Red</option>
+    <option value="blue">Blue</option>
+    <option value="green">Green</option>
+    <option value="yellow">Yellow</option>
+    <option value="purple">Purple</option>
+    <option value="violet">Voilet</option>
+    <option value="white">White</option>
+    <option value="brown">Brown</option>
+    <option value="orange">Orange</option>
+
+  </select>
+
+  <label for="fontSize">Select Font Size:</label>
+  <select id="fontSize" onchange="changeStyle()">
+    <option value="5px">5px</option>
+    <option value="10px">10px</option>
+    <option value="12px">12px</option>
+    <option value="16px">16px</option>
+    <option value="20px">20px</option>
+    <option value="24px">24px</option>
+    <option value="30px">30px</option>
+    <option value="50px">50px</option>
+  </select>
+
+  <label for="fontStyle">Select Font Style:</label>
+  <select id="fontStyle" onchange="changeStyle()">
+    <option value="normal">Normal</option>
+    <option value="italic">Italic</option>
+    <option value="oblique">Oblique</option>
+  </select>
+
+  <label for="newText">Enter New Text:</label>
+  <textarea id="newText" oninput="changeStyle()"></textarea>
+
+  <div id="output">Your styled text will appear here.</div>
+
+  <button onclick="undo()">Undo</button>
+  <button onclick="redo()">Redo</button>
+
+  <script>
+    let stateHistory = [];
+    let currentState = 0;
+
+    function changeStyle() {
+      const fontColor = document.getElementById('fontColor').value;
+      const fontSize = document.getElementById('fontSize').value;
+      const fontStyle = document.getElementById('fontStyle').value;
+      const newText = document.getElementById('newText').value;
+
+      const outputDiv = document.getElementById('output');
+      outputDiv.style.color = fontColor;
+      outputDiv.style.fontSize = fontSize;
+      outputDiv.style.fontStyle = fontStyle;
+      outputDiv.textContent = newText;
+
+      saveState();
+    }
+
+    function saveState() {
+      const outputDiv = document.getElementById('output');
+      stateHistory.splice(currentState + 1);
+      stateHistory.push(outputDiv.outerHTML);
+      currentState = stateHistory.length - 1;
+    }
+
+    function undo() {
+      if (currentState > 0) {
+        currentState--;
+        const outputDiv = document.getElementById('output');
+        outputDiv.outerHTML = stateHistory[currentState];
+      }
+    }
+
+    function redo() {
+      if (currentState < stateHistory.length - 1) {
+        currentState++;
+        const outputDiv = document.getElementById('output');
+        outputDiv.outerHTML = stateHistory[currentState];
+      }
+    }
+  </script>
+
+</body>
+</html>
